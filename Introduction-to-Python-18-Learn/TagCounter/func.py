@@ -8,20 +8,23 @@ import requests
 import settings as s
 from datetime import datetime, timezone
 import yaml
+import tkinter as tk
+from tkinter import ttk
 
-
-def run_gui_cl():
-    if len(sys.argv) == 1:
-        pass # Run GUI
-    run_cl()
+NO_REC_DB = 'No data for this URL in DB'
+NO_SYN = 'No synonym in the file'
+READ_DB_OK = 'Read from DB successfully'
 
 
 def url_builder(site):
-    domain = site
+    # Can be improved with regexp
     if '.' not in site:
         domain = syn_reader(site)
-    url = 'https://' + domain
-    return url
+    else:
+        domain = site
+    if domain:
+        url = 'https://' + domain
+        return url
 
 
 def syn_reader(site_syn):
@@ -30,17 +33,19 @@ def syn_reader(site_syn):
         for key, val in syns.items():
             if key == site_syn:
                 return val
-    print('No synonym')
-    sys.exit()
+    if len(sys.argv) == 1:
+        stat_screen.set(NO_SYN)
+    else:
+        print(NO_SYN)
+        sys.exit()
 
 
-def run_cl():
-    if sys.argv[1] in ('-view', '--view'):
-        url = url_builder(sys.argv[2])
+def run_command(comm, site):
+    if comm in ('-view', '--view'):
+        url = url_builder(site)
         db_reader(url)
-    elif sys.argv[1] in ('-get', '--get'):
-        site = sys.argv[2]
-        url = url_builder(sys.argv[2])
+    elif comm in ('-get', '--get'):
+        url = url_builder(site)
         tags, check_date = lxml_parser(url)
         db_writer(site, url, check_date, tags)
         db_reader(url)
@@ -98,24 +103,95 @@ def db_writer(site, url, check_date, tags):
     conn.close()
 
 
-def db_reader(url):
+def db_reader(input_url):
     query = 'SELECT * FROM tags_count WHERE url = ?'
-    params = [url]
+    params = [input_url]
     conn = db_conn()
     cursor = conn.cursor()
     cursor.execute(query, params)
-    result = cursor.fetchall()
+    result = cursor.fetchone()
     conn.close()
     if result:
-        for res in result:
-            site = res[0]
-            print(site)
-            url = res[1]
-            print(url)
-            local_date = datetime.strptime(res[2], '%Y-%m-%d %H:%M:%S.%f%z').astimezone()
-            print(local_date)
-            tags = pickle.loads(res[3])
-            print(tags)
+        local_date = datetime.strptime(result[2], '%Y-%m-%d %H:%M:%S.%f%z').astimezone().strftime('%d-%m-%Y, %H:%M:%S')
+        tags_db = pickle.loads(result[3])
+        tags_str = ''
+        for key, val in tags_db.items():
+            item = key + ' - ' + str(val) + '\n'
+            tags_str += item
+        if len(sys.argv) == 1:
+            site_screen.set(result[0])
+            url_screen.set(result[1])
+            date_screen.set(local_date)
+            tags_screen.set(tags_str)
+            stat_screen.set(READ_DB_OK)
+        else:
+            print('Site: ' + result[0])
+            print('URL: ' + result[1])
+            print('Check Date: ' + local_date)
+            print('Tags:\n' + tags_str)
+    elif len(sys.argv) == 1:
+        stat_screen.set(NO_REC_DB)
+        site_screen.set('')
+        date_screen.set('')
+        url_screen.set('')
+        tags_screen.set('')
     else:
-        print('No')
+        print(NO_REC_DB)
 
+
+def run_gui():
+    global site_screen, url_screen, date_screen, tags_screen, stat_screen
+    root = tk.Tk()
+    frm1 = ttk.Frame(root)
+    frm1.pack()
+    ttk.Label(frm1, text="Hello World!").pack(pady=5)
+
+    frm2 = ttk.Frame(root)
+    frm2.pack(padx=30)
+    ttk.Label(frm2, text='Site (synonym):').pack(side='left')
+    inp_url = tk.StringVar()
+    ttk.Entry(frm2, textvariable=inp_url).pack(side='left')
+
+    ttk.Button(frm2, text='View', command=lambda: run_command('-view', inp_url.get())).pack(side='left', padx=3)
+    ttk.Button(frm2, text='Get', command=lambda: run_command('-get', inp_url.get())).pack(side='left')
+
+    ttk.Separator(root, orient='horizontal').pack(fill='x', pady=10)
+
+    frm3 = ttk.Frame(root)
+    frm3.pack(padx=15, side='top', anchor='w')
+    ttk.Label(frm3, text='Site:').pack(side='left')
+    site_screen = tk.StringVar()
+    ttk.Label(frm3, textvariable=site_screen, font=('Consolas', '11')).pack(padx=5)
+
+    frm4 = ttk.Frame(root)
+    frm4.pack(padx=15, side='top', anchor='w')
+    ttk.Label(frm4, text='URL:').pack(side='left')
+    url_screen = tk.StringVar()
+    ttk.Label(frm4, textvariable=url_screen, font=('Consolas', '11')).pack(padx=5)
+
+    frm5 = ttk.Frame(root)
+    frm5.pack(padx=15, side='top', anchor='w')
+    ttk.Label(frm5, text='Check Date:').pack(side='left')
+    date_screen = tk.StringVar()
+    ttk.Label(frm5, textvariable=date_screen, font=('Consolas', '11')).pack(padx=5)
+
+    frm6 = ttk.LabelFrame(root, text='Tags')
+    frm6.pack(padx=15, pady=5, ipadx=5, side='top', anchor='w')
+    tags_screen = tk.StringVar()
+    ttk.Label(frm6, textvariable=tags_screen, width=15, font=('Consolas', '10')).pack()
+
+    ttk.Separator(root, orient='horizontal').pack(fill='x', pady=3)
+
+    frm7 = ttk.Frame(root)
+    frm7.pack(side='left')
+    stat_screen = tk.StringVar()
+    stat_screen.set(' Ready')
+    ttk.Label(frm7, textvariable=stat_screen, font=('Consolas', '9')).pack(padx=3)
+
+    frm8 = ttk.Frame(root)
+    frm8.pack(padx=3, pady=3, side='bottom', anchor='se')
+    # ttk.Button(frm7, text='Quit', command=root.destroy).pack()
+    ttk.Label(frm8, text='Alex Sky, 2022', foreground='grey').pack()
+
+
+    root.mainloop()

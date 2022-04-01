@@ -1,6 +1,13 @@
 import func
+import sys
 
-# func.run_gui_cl()
+if len(sys.argv) == 1:
+    func.run_gui()
+else:
+    comm = sys.argv[1]
+    site = sys.argv[2]
+    func.run_command(comm, site)
+
 # url = 'https://' + 'skyfitness.ru'
 # func.db_reader(url)
 
@@ -9,11 +16,3 @@ import func
 
 
 
-from tkinter import *
-from tkinter import ttk
-root = Tk()
-frm = ttk.Frame(root, padding=10)
-frm.grid()
-ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
-root.mainloop()
