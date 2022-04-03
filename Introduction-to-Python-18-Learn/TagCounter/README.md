@@ -13,7 +13,8 @@ pip install TagCounter-0.1.tar.gz
 ```
 
 ## Usage
-Tag Counter can be run via CLI or GUI
+Tag Counter can be run via CLI or GUI. If no arguments are provided - then GUI version starts.
+Otherwise, program is run via CLI
 
 CLI interface: `tagcounter -command site`
 
