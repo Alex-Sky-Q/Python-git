@@ -37,6 +37,9 @@ In case you would like to use a new DB, please specify its name in `settings.py`
 The program can be improved in several ways:
 1. Change storage of DB and Synonym files to the user local folder so that admin rights will not be required if program is installed in system directory
 2. Improve design
+3. Refactor functions to separate:
+   1. Reading data from DB and displaying that data
+   2. Connection to websites and parsing these sites
 
 ## Authors
 Alex Sky - [GitHub](https://github.com/Alex-Sky-Q/Python-git/tree/master/Introduction-to-Python-18-Learn/TagCounter)
