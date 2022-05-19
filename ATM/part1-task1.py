@@ -1,8 +1,8 @@
-# 1. Write a simple calculator program – a console application
+# Task. Write a simple calculator program – a console application
 # (implement at least 4 operations: addition, subtraction, multiplication, division)
 # with input / output of values / results
 
-# Solution can be improved for complex expressions with several operators
+# Solution. Can be improved for complex expressions with several operators
 
 user_expr = input('Please, enter the expression\n')
 
