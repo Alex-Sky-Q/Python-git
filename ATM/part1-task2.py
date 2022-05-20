@@ -1,8 +1,75 @@
+import numpy as np
+
 # Solve one of the following algorithmic tasks
 # •	Transpose a matrix
+matrix = np.array(
+    [[1, 2, 6],
+     [3, 16, 5]]
+)
+
+
+def transpose_matrix(matrix):
+    res_matrix = []
+    for i, row in enumerate(matrix):
+        if i != 0:
+            for ind, num in enumerate(row):
+                res_matrix[ind].append(num)
+        else:
+            for num in row:
+                res_matrix.append([num])
+    return np.array(res_matrix)
+
+
+# print(transpose_matrix(matrix))
+
 # •	Turn a matrix on 90 degrees clockwise
+matrix = np.array(
+    [[1, 2, 5],
+     [3, 10, 6],
+     [5, 8, 3]]
+)
+
+
+def turn_matrix(matrix):
+    res_matrix = np.zeros((len(matrix[0]),len(matrix)))
+    for i in range(len(matrix[0])):
+        for c in range(len(matrix)):
+            res_matrix[i].put(c, matrix[len(matrix)-1-c][i])
+    return res_matrix
+
+
+print(turn_matrix(matrix))
+
 # •	Multiply matrixes
+matrixA = np.array(
+    [[1, 2],
+     [3, 10]]
+)
+matrixB = np.array(
+    [[5, 2, 1],
+     [6, 3, 2]]
+)
+
+
+def mult_matrix(matrA, matrB):
+    if len(matrA[0]) == len(matrB):
+        res_matrix = np.zeros((len(matrB), len(matrB[0])))
+        for i, row in enumerate(matrA):
+            for c in range(len(matrB[0])):
+                sum_num = 0
+                for ind in range(len(matrB)):
+                    sum_num += row[ind] * matrB[ind][c]
+                res_matrix[i].put(c, sum_num)
+    else:
+        res_matrix = 'A number of columns of the first matrix should be equal to a number of rows of the 2nd matrix'
+    return res_matrix
+
+
+# print(mult_matrix(matrixA, matrixB))
+
 # •	Find a return matrix
+# What does "return matrix" mean? Inverse matrix?
+
 # •	Find a matrix determinant
 
 # •	Find the second by length string in a list or array
@@ -92,4 +159,34 @@ def sort_by_vowels(str_list):
 string_list = ['one', 'search', 'begin', 'story', 'home', 'fifteen']
 
 
+def first_last(word):
+    return word[-1] + word[1:-1] + word[0]
+
+
+def fl_list(str_list):
+    res_list = []
+    for i, s in enumerate(str_list):
+        if i % 2 != 0:
+            s = first_last(s)
+        res_list.append(s)
+    return res_list
+
+
+# print(fl_list(string_list))
+
 # •	Revert strings of list or array
+string_list = ['one', 'search', 'begin', 'story', 'home', 'fifteen']
+
+
+def revert_string(word):
+    # res = word[::-1] # built-in solution
+    res = ''
+    for w in word:
+        res = w + res
+    return res
+
+
+def rv_str_list(str_list):
+    return [revert_string(s) for s in str_list]
+
+# print(rv_str_list(string_list))
