@@ -22,11 +22,19 @@ class Airline:
     def add_aircraft(self, aircraft):
         self.aircrafts.append(aircraft)
 
+    # Sort aircrafts by max capacity
     def sort_by_cap(self):
         return sorted(self.aircrafts, key=Aircraft.capacity_getter)
 
+    # Sort aircrafts by max distance
     def sort_by_dist(self):
         return sorted(self.aircrafts, key=Aircraft.distance_getter)
+
+    def get_aircraft_maxcap(self):
+        return self.sort_by_cap()[-1]
+
+    def get_aircraft_maxdist(self):
+        return self.sort_by_dist()[-1]
 
 
 class Flight:
@@ -89,3 +97,6 @@ for x in aircraft_list:
 
 print(modern_airline.sort_by_cap())
 print(modern_airline.sort_by_dist())
+
+print(modern_airline.get_aircraft_maxcap())
+print(modern_airline.get_aircraft_maxdist())
