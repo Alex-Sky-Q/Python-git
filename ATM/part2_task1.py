@@ -12,15 +12,24 @@
 # (What is the difference between total and load?)
 # Sort company's airplanes by predefined criteria (define criteria by yourself).
 # Find airplane which will match predefined criteria (you could define one or several criteria).
+import sys
+
+from part3_task1 import *
+
 
 class Airline:
-    def __init__(self, name, base_country=None, aircrafts=[]):
+    def __init__(self, name, base_country=None, aircrafts=None):
+        if aircrafts is None:
+            aircrafts = []
         self.name = name
         self.base_country = base_country
         self.aircrafts = aircrafts
 
     def add_aircraft(self, aircraft):
-        self.aircrafts.append(aircraft)
+        if isinstance(aircraft, Aircraft):
+            self.aircrafts.append(aircraft)
+        else:
+            raise AircraftError
 
     # Sort aircrafts by max capacity
     def sort_by_cap(self):
@@ -28,7 +37,11 @@ class Airline:
 
     # Sort aircrafts by max distance
     def sort_by_dist(self):
-        return sorted(self.aircrafts, key=Aircraft.distance_getter)
+        try:
+            return sorted(self.aircrafts, key=Aircraft.distance_getter)
+        except DistanceError:
+            print('Please set the distance for all aircrafts')
+            sys.exit()
 
     def get_aircraft_maxcap(self):
         return self.sort_by_cap()[-1]
@@ -48,7 +61,10 @@ class Flight:
         self.aircraft = aircraft
 
     def get_duration(self):
-        return self.arr_datetime - self.dep_datetime
+        if self.arr_datetime > self.dep_datetime:
+            return self.arr_datetime - self.dep_datetime
+        else:
+            raise DurationError(self)
 
 
 class Ticket:
@@ -74,7 +90,9 @@ class Aircraft:
         return self.max_capacity
 
     def distance_getter(self):
-        return self.max_distance
+        if self.max_distance is not None:
+            return self.max_distance
+        raise DistanceError(self)
 
 
 class Helicopter(Aircraft):
@@ -93,10 +111,19 @@ aircraft3 = Aircraft(5000, 50)
 aircraft_list = [aircraft1, aircraft2, aircraft3]
 
 for x in aircraft_list:
-    modern_airline.add_aircraft(x)
+    try:
+        modern_airline.add_aircraft(x)
+    except AircraftError:
+        print('Airline accepts only Aircraft objects')
 
-print(modern_airline.sort_by_cap())
-print(modern_airline.sort_by_dist())
+# print(modern_airline.sort_by_cap())
+# print(modern_airline.sort_by_dist())
 
-print(modern_airline.get_aircraft_maxcap())
+# print(modern_airline.get_aircraft_maxcap())
 print(modern_airline.get_aircraft_maxdist())
+
+# test_airline = Airline('test')
+# print(test_airline.sort_by_dist())
+#
+# aircraft5 = Aircraft()
+# print(aircraft5.distance_getter())
