@@ -2,6 +2,7 @@
 # For example, there is no element that meets required criteria in the collection, impossible to delete an element etc.
 # Leave your explanation in commented blocks of your exception class.
 # Create at least 3 custom exceptions and use 5 built-in exceptions minimum
+# (3 custom and 2 built-in this file, others are in part2_task1 file)
 
 class AircraftError(TypeError):
     """ When adding object, that is not of Aircraft class """

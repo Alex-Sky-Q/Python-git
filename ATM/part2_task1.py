@@ -12,8 +12,10 @@
 # (What is the difference between total and load?)
 # Sort company's airplanes by predefined criteria (define criteria by yourself).
 # Find airplane which will match predefined criteria (you could define one or several criteria).
-import sys
 
+# Part3.Task2. Enhance the scenarios with reading from file / writing data to file using I/O Streams
+import json
+import sys
 from part3_task1 import *
 
 
@@ -44,10 +46,17 @@ class Airline:
             sys.exit()
 
     def get_aircraft_maxcap(self):
-        return self.sort_by_cap()[-1]
+        try:
+            return self.sort_by_cap()[-1]
+        except IndexError:
+            print('There are no aircrafts in the Airline')
 
     def get_aircraft_maxdist(self):
-        return self.sort_by_dist()[-1]
+        try:
+            return self.sort_by_dist()[-1]
+        except IndexError:
+            print('There are no aircrafts in the Airline')
+            sys.exit()
 
 
 class Flight:
@@ -70,6 +79,22 @@ class Flight:
 class Ticket:
     def __init__(self, flight_num):
         self.flight_num = flight_num
+
+    def __repr__(self):
+        return f'Ticket({self.flight_num})'
+
+    @classmethod
+    def from_file(cls, filename):
+        with open(filename) as f:
+            tickets_list = [cls(line.rstrip()) for line in f]
+        return tickets_list
+
+    @classmethod
+    def from_json(cls, filename):
+        with open(filename) as f:
+            tickets_dict = json.load(f)
+            tickets_list = [cls(val) for val in tickets_dict.values()]
+        return tickets_list
 
 
 class Airport:
@@ -103,27 +128,24 @@ class Airplane(Aircraft):
     pass
 
 
-modern_airline = Airline('Modern Airline')
+# modern_airline = Airline('Modern Airline')
 
-aircraft1 = Aircraft(1000, 100)
-aircraft2 = Aircraft(3000, 150)
-aircraft3 = Aircraft(5000, 50)
-aircraft_list = [aircraft1, aircraft2, aircraft3]
-
-for x in aircraft_list:
-    try:
-        modern_airline.add_aircraft(x)
-    except AircraftError:
-        print('Airline accepts only Aircraft objects')
+# aircraft1 = Aircraft(1000, 100)
+# aircraft2 = Aircraft(3000, 150)
+# aircraft3 = Aircraft(5000, 50)
+# aircraft_list = [aircraft1, aircraft2, aircraft3]
+#
+# for x in aircraft_list:
+#     try:
+#         modern_airline.add_aircraft(x)
+#     except AircraftError:
+#         print('Airline accepts only Aircraft objects')
 
 # print(modern_airline.sort_by_cap())
 # print(modern_airline.sort_by_dist())
 
 # print(modern_airline.get_aircraft_maxcap())
-print(modern_airline.get_aircraft_maxdist())
+# print(modern_airline.get_aircraft_maxdist())
 
 # test_airline = Airline('test')
 # print(test_airline.sort_by_dist())
-#
-# aircraft5 = Aircraft()
-# print(aircraft5.distance_getter())
