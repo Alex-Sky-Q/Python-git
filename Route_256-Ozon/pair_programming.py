@@ -48,3 +48,6 @@ for i in range(count):
             devs_num_level[num2] = ''
             print(*team_nums)
     print('')
+
+# Probably can be improved by iterating only on the first half of the devs
+# Another way is to (instead of dict) create temp list of already marked devs and compare against that list while iterating
