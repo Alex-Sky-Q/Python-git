@@ -6,7 +6,9 @@
 # - Выходные данные
 # Для каждого набора входных данных выведите сумму двух заданных чисел, то есть a+b
 
+
 count = input()
+
 for i in range(int(count)):
     nums = input().split()
     ints = [int(num) for num in nums]
