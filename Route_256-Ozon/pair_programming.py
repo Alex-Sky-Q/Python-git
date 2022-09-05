@@ -34,7 +34,6 @@ for i in range(count):
     devs_num_level = {num: level for num, level in enumerate(devs_level, 1)}
     for num, level in devs_num_level.items():
         if level:
-            team_nums = [num]
             num_level = level
             devs_num_level[num] = ''
             level_diff = 100
@@ -44,10 +43,10 @@ for i in range(count):
                     if abs(num_level - l) < level_diff:
                         num2 = n
                         level_diff = abs(num_level - l)
-            team_nums.append(num2)
             devs_num_level[num2] = ''
-            print(*team_nums)
+            print(num, num2)
     print('')
 
-# Probably can be improved by iterating only on the first half of the devs
-# Another way is to (instead of dict) create temp list of already marked devs and compare against that list while iterating
+# Probably can be improved by iterating only on the first half of the devs.
+# Another way is to (instead of a dict) create a temp list of already marked devs
+# and compare against that list while iterating
