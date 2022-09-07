@@ -5,7 +5,7 @@
 # Необходимо написать программу, проверяющую, соответствует ли сотрудник критерию по его отчету.
 # Сотрудник соответствует этому критерию, если не существует такого задания x, которое выполнялось с перерывом
 # (т. е. в некоторый день i сотрудник выполнял задание x, в дни с i+1 по j−1 он занимался другими заданиями,
-# а в день j сотрудник продолжил выполнение задания x, при этом j>i+1). Иными словами, каждое задание, которое выполнял
+# а в день j сотрудник продолжил выполнение задания x, при этом j > i plus 1). Т.е. каждое задание, которое выполнял
 # сотрудник, должно занимать один непрерывный отрезок дней.
 # - Входные данные
 # В первой строке задано одно целое число t (1≤t≤10) — количество наборов входных данных.
@@ -15,28 +15,101 @@
 # Для каждого набора входных данных выведите ответ на отд. строке.
 # Если отчет соответствует критерию, выведите YES, иначе выведите NO.
 
+# import time
+# from collections import Counter
 
 count = int(input())
 
-for i in range(count):
-    total_devs = int(input())
-    devs_level_str = input().split()
-    devs_level = [int(num) for num in devs_level_str]
-    devs_num_level = {num: level for num, level in enumerate(devs_level, 1)}
-    for num, level in devs_num_level.items():
-        if level:
-            team_nums = [num]
-            num_level = level
-            devs_num_level[num] = ''
-            level_diff = 100
-            num2 = 0
-            for n, l in devs_num_level.items():
-                if l:
-                    if abs(num_level - l) < level_diff:
-                        num2 = n
-                        level_diff = abs(num_level - l)
-            team_nums.append(num2)
-            devs_num_level[num2] = ''
-            print(*team_nums)
-    print('')
-    
+for x in range(count):
+    total_tasks = int(input())
+    tasks = input().split()
+    # start = time.perf_counter()
+    # tasks = [int(num) for num in tasks_str]
+    # tasks_cnt = {}
+    # for i in tasks:
+    #     if tasks_cnt.get(i):
+    #         if tasks_cnt[i] == 2:
+    #             continue
+    #         else:
+    #             tasks_cnt[i] += 1
+    #     else:
+    #         tasks_cnt[i] = 1
+    # tasks_cnt = Counter(tasks)
+    # tasks_to_check_list = [key for key, val in tasks_cnt.items() if val > 1]
+    # Because iterator above works just once we need to store the list separately
+    # tasks_to_check = set(tasks_to_check_list)
+    # tasks_set = set(tasks)
+    # if len(tasks_set) == len(tasks):
+    #     print('YES')
+    #     continue
+    # We can create a dict with lists of indexes of each item
+    tasks_dict = {}
+    for i, task in enumerate(tasks):
+        if tasks_dict.get(task):
+            tasks_dict[task].append(i)
+        else:
+            tasks_dict[task] = [i]
+    res = ''
+    # Compare indexes of each task with each other
+    for ind in tasks_dict.values():
+        if len(ind) >= 2:
+            for i, v in enumerate(ind[:-1]):
+                diff = ind[i+1] - v
+                if diff > 1:
+                    res = 'NO'
+                    print(res)
+                    break
+        if res:
+            break
+    if not res:
+        print('YES')
+
+    # for i, task in enumerate(tasks[:-2]):
+    #     if task == tasks[i+1]:
+    #         continue
+    #     if task in tasks_to_check:
+    #         # if bin_search(task, tasks[i+2:]):
+    #         for ind in tasks_dict[task]:
+    #             if ind >= (i+2):
+    #                 res = 'NO'
+    #                 print(res)
+    #                 break
+    #     if res:
+    #         break
+    # if not res:
+    #     print('YES')
+
+    # print((time.perf_counter() - start))
+
+
+# def bin_search(s, data):
+#     data_sorted = sorted(set(data))
+#     if len(data_sorted) == 1:
+#         if s == data_sorted[0]:
+#             return True
+#         else:
+#             return False
+#     b = int(len(data_sorted) / 2)
+#     while len(data_sorted) != 1:
+#         if s == data_sorted[b]:
+#             return True
+#         if s < data_sorted[b]:
+#             data_sorted = data_sorted[:b]
+#             b = int(len(data_sorted) / 2)
+#             if len(data_sorted) == 1:
+#                 if s == data_sorted[0]:
+#                     return True
+#                 else:
+#                     return False
+#         else:
+#             if (b + 1) < len(data_sorted):
+#                 data_sorted = data_sorted[b+1:]
+#             else:
+#                 return False
+#             b = int(len(data_sorted) / 2)
+#             if len(data_sorted) == 1:
+#                 if s == data_sorted[0]:
+#                     return True
+#                 else:
+#                     return False
+#     return False
