@@ -64,6 +64,7 @@ for x in range(count):
     if not res:
         print('YES')
 
+    # First version - not so fast due to repeated iterations over list
     # for i, task in enumerate(tasks[:-2]):
     #     if task == tasks[i+1]:
     #         continue
