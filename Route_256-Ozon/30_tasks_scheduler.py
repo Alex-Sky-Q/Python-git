@@ -1,4 +1,5 @@
 # import operator
+import heapq
 
 
 class Proc:
@@ -50,6 +51,7 @@ class Proc:
 class ProcPool:
     def __init__(self, procs):
         # procs.sort()  # key=operator.attrgetter('current_task_remaining_time', 'rate')
+        heapq.heapify(procs)
         self.processors = procs
         # self.free_procs_num = len(self.processors)
         self.busy_processors = []
@@ -73,13 +75,13 @@ class ProcPool:
 
     def min_free_proc(self):
         # if self.processors:
-        self.processors.sort()
+        # self.processors.sort()
         # for proc in self.processors:
             # if proc.current_task_remaining_time == 0:
                 # self.free_procs_num -= 1
                 # if proc not in self.busy_processors:
         self.busy_processors.append(self.processors[0])
-        return self.processors.pop(0)
+        return heapq.heappop(self.processors)
         # try:
         #     return min(proc for proc in self.processors if proc.current_task_remaining_time == 0)
         # except ValueError:
@@ -97,7 +99,7 @@ class ProcPool:
             # self.processors.extend(list_to_remove)
             # self.busy_processors = [proc for proc in self.busy_processors if proc not in list_to_remove]
             for proc in list_to_remove:
-                self.processors.append(proc)
+                heapq.heappush(self.processors, proc)
                 self.busy_processors.remove(proc)
 
 
@@ -106,13 +108,13 @@ processors = list(map(lambda x: Proc(int(x)), input().split()))
 free_proc_pool = ProcPool(processors)
 # busy_proc_pool = ProcPool()
 
-tasks = {}
+# tasks = {}
 # tasks_start_times = []
-for t in range(tasks_count):
+previous_task_start = 0
+for i in range(tasks_count):
     task_start, task_time = map(int, input().split())
-    tasks[t] = (task_start, task_time)
+    # tasks[i] = (task_start, task_time)
     # tasks_start_times.append(task_start)
-
 # for period in range(tasks_start_times[0], tasks_start_times[-1]+1):
 #     proc_pool.busy_proc_task_proc()
 #     if period in tasks.keys():
@@ -120,13 +122,14 @@ for t in range(tasks_count):
 #         if free_proc:
 #             free_proc.current_task_remaining_time = tasks[period]
 
-for i, task in tasks.items():
+# for i, task in tasks.items():
     if i != 0:
-        free_proc_pool.busy_proc_task_proc(task[0] - tasks[i-1][0])
+        free_proc_pool.busy_proc_task_proc(task_start - previous_task_start)
+    previous_task_start = task_start
     if len(free_proc_pool.processors) > 0:
         free_proc = free_proc_pool.min_free_proc()
         # if free_proc:
-        free_proc.current_task_remaining_time = task[1]
+        free_proc.current_task_remaining_time = task_time
         # if free_proc not in busy_proc_pool.processors:
         #     busy_proc_pool.processors.append(free_proc)
 
