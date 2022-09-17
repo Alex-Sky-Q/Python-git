@@ -117,7 +117,7 @@ for x in range(count):
     print()
 
 
-# Simple solution , doesn't work for all cases
+# Simple solution, doesn't work for all cases
 # def create_stars(from_list, to_dict):
 #     i = 5
 #     for v in from_list:
