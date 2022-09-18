@@ -128,3 +128,28 @@ for x in range(count):
     for b in base_comments:
         print_comments(b, comm_dict)
         print()
+
+
+# def print_comments(start_comm, from_dict, levels=None, start=0):
+#     if levels is None:
+#         levels = [0]
+#
+#     if start == 1:
+#         print(comm_text_dict[start_comm])
+#     else:
+#         comment_line = ['' * levels[-1]]
+#         for lvl in levels:
+#             comment_line.insert(lvl, '|  ')
+#         print(''.join(comment_line) + '|--' + comm_text_dict[start_comm])
+#
+#     if from_dict[start_comm]:
+#         connection_line = ['' * levels[-1]]
+#         for lvl in levels:
+#             connection_line.insert(lvl, '|  ')
+#         print(''.join(connection_line))
+#         for s in sorted(from_dict[start_comm]):
+#             print_comments(s, from_dict, levels)
+#             lvl = levels[-1]
+#             levels.remove(lvl)
+#             lvl += 1
+#             levels.append(lvl)
